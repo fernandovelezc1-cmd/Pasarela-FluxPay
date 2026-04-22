@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#fff" stroke="#1B4F8F" stroke-width="32"/>
+  <text x="256" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="200" fill="#1B4F8F">PSE</text>
+  <path d="M120 380h272" stroke="#F7A21B" stroke-width="24" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultado del Pago | Wompi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <div class="payment-header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/><circle cx="7" cy="15" r="1" fill="#fff" stroke="none"/><circle cx="11" cy="15" r="1" fill="#fff" stroke="none"/></svg>
+      </div>
+      <h1>Resultado del Pago</h1>
+    </div>
+
+    <div class="payment-card">
+      <div id="resultContent" class="result-container">
+        <div class="result-icon pending" id="resultIcon">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#FFD740" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h2 id="resultTitle">Consultando...</h2>
+        <p class="result-message" id="resultMessage">Estamos verificando el estado de tu transacción.</p>
+
+        <div class="result-details" id="resultDetails" style="display:none;">
+          <div class="detail-row">
+            <span class="label">Referencia</span>
+            <span class="value" id="detailRef">-</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Monto</span>
+            <span class="value" id="detailAmount">-</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Estado</span>
+            <span class="value" id="detailStatus">-</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Método</span>
+            <span class="value" id="detailMethod">-</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Fecha</span>
+            <span class="value" id="detailDate">-</span>
+          </div>
+        </div>
+
+        <a href="/" class="btn btn-back">← Volver al inicio</a>
+      </div>
+    </div>
+
+    <div class="payment-footer">
+      <p>Si tienes dudas, contacta al soporte del comercio.</p>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const txId = params.get('id');
+
+      if (!txId) {
+        showResult('error', '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#FF5252" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>', 'Sin información', 'No se encontró información de la transacción.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/transactions/${encodeURIComponent(txId)}`);
+        const json = await res.json();
+
+        if (!json.success) {
+          showResult('error', '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#FF5252" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>', 'Error', 'No se pudo consultar la transacción.');
+          return;
+        }
+
+        const tx = json.data;
+        displayTransaction(tx);
+      } catch {
+        showResult('error', '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#FF5252" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>', 'Error de conexión', 'No se pudo conectar con el servidor.');
+      }
+    });
+
+    function displayTransaction(tx) {
+      const statusMap = {
+        APPROVED: { svg: '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#00E676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', class: 'success', title: '¡Pago Aprobado!', message: 'Tu pago se procesó exitosamente.' },
+        DECLINED: { svg: '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#FF5252" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>', class: 'error', title: 'Pago Rechazado', message: 'Tu pago fue rechazado. Intenta con otro método de pago.' },
+        VOIDED: { svg: '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#FF5252" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>', class: 'error', title: 'Pago Anulado', message: 'Esta transacción fue anulada.' },
+        ERROR: { svg: '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#FFD740" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', class: 'error', title: 'Error en el Pago', message: 'Ocurrió un error al procesar el pago.' },
+        PENDING: { svg: '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#FFD740" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', class: 'pending', title: 'Pago Pendiente', message: 'Tu pago está siendo procesado. Te notificaremos cuando se complete.' },
+      };
+
+      const status = statusMap[tx.status] || statusMap.PENDING;
+
+      showResult(status.class, status.svg, status.title, status.message);
+
+      // Details
+      const details = document.getElementById('resultDetails');
+      details.style.display = 'block';
+
+      document.getElementById('detailRef').textContent = tx.reference || '-';
+
+      const amount = tx.amount_in_cents ? (tx.amount_in_cents / 100) : 0;
+      document.getElementById('detailAmount').textContent =
+        `$${amount.toLocaleString('es-CO')} ${tx.currency || 'COP'}`;
+
+      const statusLabels = {
+        APPROVED: 'Aprobado',
+        DECLINED: 'Rechazado',
+        VOIDED: 'Anulado',
+        ERROR: 'Error',
+        PENDING: 'Pendiente',
+      };
+      document.getElementById('detailStatus').textContent =
+        statusLabels[tx.status] || tx.status;
+
+      document.getElementById('detailMethod').textContent =
+        tx.payment_method_type || '-';
+
+      if (tx.created_at) {
+        const date = new Date(tx.created_at);
+        document.getElementById('detailDate').textContent =
+          date.toLocaleString('es-CO', {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          });
+      }
+
+      // Auto-refresh for pending
+      if (tx.status === 'PENDING') {
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
+      }
+    }
+
+    function showResult(cls, svgHtml, title, message) {
+      const iconEl = document.getElementById('resultIcon');
+      iconEl.className = `result-icon ${cls}`;
+      iconEl.innerHTML = svgHtml;
+      document.getElementById('resultTitle').textContent = title;
+      document.getElementById('resultMessage').textContent = message;
+    }
+  </script>
+</body>
+</html>

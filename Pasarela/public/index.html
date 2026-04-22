@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasarela de Pagos | Wompi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- Header -->
+    <div class="payment-header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/><circle cx="7" cy="15" r="1" fill="#fff" stroke="none"/><circle cx="11" cy="15" r="1" fill="#fff" stroke="none"/></svg>
+      </div>
+      <h1>Pasarela de Pagos</h1>
+      <p>Pagos seguros con cifrado end-to-end</p>
+    </div>
+
+    <!-- Payment Card -->
+    <div class="payment-card">
+      <div class="card-body">
+
+        <!-- Alert -->
+        <div id="alertBox" class="alert"></div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <div class="order-row">
+            <span>Producto / Servicio</span>
+            <span>Pago en línea</span>
+          </div>
+          <div class="order-row">
+            <span>Moneda</span>
+            <span>COP</span>
+          </div>
+          <div class="order-row order-total">
+            <span>Total a pagar</span>
+            <span id="displayTotal">$0</span>
+          </div>
+        </div>
+
+        <!-- Amount -->
+        <div class="form-group">
+          <label for="amount">Monto a pagar</label>
+          <div class="amount-input-group">
+            <span class="currency-prefix">$</span>
+            <input type="text" id="amount" class="form-control" placeholder="50,000" inputmode="numeric">
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" class="form-control" placeholder="tu@correo.com">
+        </div>
+
+        <!-- Payment Method Tabs -->
+        <div class="payment-tabs">
+          <button class="tab-btn active" data-tab="card" type="button">
+            <span class="tab-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </span> Tarjeta
+          </button>
+          <button class="tab-btn" data-tab="nequi" type="button">
+            <span class="tab-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20"><rect width="24" height="24" rx="5" fill="#E21068"/><path d="M6 6h3v7.5l5-7.5h3v12h-3V10.5l-5 7.5H6V6z" fill="#fff"/></svg>
+            </span> Nequi
+          </button>
+          <button class="tab-btn" data-tab="pse" type="button">
+            <span class="tab-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20"><rect width="24" height="24" rx="5" fill="#1B4F8F"/><text x="12" y="16.5" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="10" fill="#fff">PSE</text></svg>
+            </span> PSE
+          </button>
+        </div>
+
+        <!-- TAB: Tarjeta -->
+        <div id="tab-card" class="tab-content active">
+          <!-- Card Preview -->
+          <div class="card-preview">
+            <div class="card-brand" id="cardBrand"></div>
+            <div class="chip"></div>
+            <div class="card-number-preview" id="cardNumberPreview">•••• •••• •••• ••••</div>
+            <div class="card-bottom">
+              <div>
+                <small>TITULAR</small>
+                <span id="cardHolderPreview">TU NOMBRE</span>
+              </div>
+              <div>
+                <small>VENCE</small>
+                <span id="cardExpiryPreview">MM/AA</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cardNumber">Número de tarjeta</label>
+            <input type="text" id="cardNumber" class="form-control" placeholder="4242 4242 4242 4242" maxlength="19" inputmode="numeric" autocomplete="cc-number">
+          </div>
+          <div class="form-group">
+            <label for="cardHolder">Nombre del titular</label>
+            <input type="text" id="cardHolder" class="form-control" placeholder="Como aparece en la tarjeta" autocomplete="cc-name">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expMonth">Mes</label>
+              <select id="expMonth" class="form-control">
+                <option value="">Mes</option>
+                <option value="01">01 - Enero</option>
+                <option value="02">02 - Febrero</option>
+                <option value="03">03 - Marzo</option>
+                <option value="04">04 - Abril</option>
+                <option value="05">05 - Mayo</option>
+                <option value="06">06 - Junio</option>
+                <option value="07">07 - Julio</option>
+                <option value="08">08 - Agosto</option>
+                <option value="09">09 - Septiembre</option>
+                <option value="10">10 - Octubre</option>
+                <option value="11">11 - Noviembre</option>
+                <option value="12">12 - Diciembre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="expYear">Año</label>
+              <select id="expYear" class="form-control">
+                <option value="">Año</option>
+                <option value="25">2025</option>
+                <option value="26">2026</option>
+                <option value="27">2027</option>
+                <option value="28">2028</option>
+                <option value="29">2029</option>
+                <option value="30">2030</option>
+                <option value="31">2031</option>
+                <option value="32">2032</option>
+                <option value="33">2033</option>
+                <option value="34">2034</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cvc">CVC / CVV</label>
+            <input type="text" id="cvc" class="form-control" placeholder="123" maxlength="4" inputmode="numeric" autocomplete="cc-csc" style="max-width: 120px;">
+          </div>
+          <div class="form-group">
+            <label for="installments">Cuotas</label>
+            <select id="installments" class="form-control">
+              <option value="1">1 cuota</option>
+              <option value="2">2 cuotas</option>
+              <option value="3">3 cuotas</option>
+              <option value="6">6 cuotas</option>
+              <option value="12">12 cuotas</option>
+              <option value="24">24 cuotas</option>
+              <option value="36">36 cuotas</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- TAB: Nequi -->
+        <div id="tab-nequi" class="tab-content">
+          <div class="nequi-info">
+            <div class="nequi-info-icon">
+              <svg viewBox="0 0 24 24" width="40" height="40"><rect width="24" height="24" rx="5" fill="#E21068"/><path d="M6 6h3v7.5l5-7.5h3v12h-3V10.5l-5 7.5H6V6z" fill="#fff"/></svg>
+            </div>
+            <p>Ingresa tu número de celular registrado en Nequi. Recibirás una notificación push en tu app para aprobar el pago.</p>
+          </div>
+          <div class="form-group">
+            <label for="nequiPhone">Número de celular Nequi</label>
+            <input type="tel" id="nequiPhone" class="form-control" placeholder="3001234567" maxlength="10" inputmode="numeric">
+          </div>
+        </div>
+
+        <!-- TAB: PSE -->
+        <div id="tab-pse" class="tab-content">
+          <div class="pse-info">
+            <div class="form-group">
+              <label for="pseBank">Banco</label>
+              <select id="pseBank" class="form-control">
+                <option value="">Selecciona tu banco</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="psePersonType">Tipo de persona</label>
+              <select id="psePersonType" class="form-control">
+                <option value="0">Natural</option>
+                <option value="1">Jurídica</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="pseDocType">Tipo de documento</label>
+              <select id="pseDocType" class="form-control">
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="NIT">NIT</option>
+                <option value="PP">Pasaporte</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="pseDocNumber">Número de documento</label>
+              <input type="text" id="pseDocNumber" class="form-control" placeholder="1234567890" inputmode="numeric">
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Name for customer data -->
+        <div class="form-group" id="customerNameGroup">
+          <label for="customerName">Nombre completo</label>
+          <input type="text" id="customerName" class="form-control" placeholder="Nombre y apellido">
+        </div>
+
+        <!-- Phone for customer data -->
+        <div class="form-group" id="customerPhoneGroup">
+          <label for="customerPhone">Teléfono de contacto</label>
+          <input type="tel" id="customerPhone" class="form-control" placeholder="3001234567" maxlength="10" inputmode="numeric">
+        </div>
+
+        <!-- Acceptance -->
+        <div class="acceptance">
+          <input type="checkbox" id="acceptTerms">
+          <label for="acceptTerms">
+            Acepto los <a href="#" id="termsLink" target="_blank">términos y condiciones</a>,
+            la <a href="#" id="privacyLink" target="_blank">política de privacidad</a> y
+            autorizo el tratamiento de mis datos personales.
+          </label>
+        </div>
+
+        <!-- Accepted brands -->
+        <div class="accepted-brands">
+          <span class="accepted-label">Aceptamos</span>
+          <div class="brand-logos">
+            <svg viewBox="0 0 48 16" width="42" height="14" class="brand-logo">
+              <rect width="48" height="16" rx="3" fill="rgba(255,255,255,0.08)"/>
+              <text x="24" y="12" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="10" fill="#A09CB5" font-style="italic">VISA</text>
+            </svg>
+            <svg viewBox="0 0 48 30" width="34" height="20" class="brand-logo">
+              <circle cx="18" cy="15" r="11" fill="#EB001B" opacity="0.7"/>
+              <circle cx="30" cy="15" r="11" fill="#F79E1B" opacity="0.7"/>
+              <rect x="18" y="7" width="12" height="16" fill="#FF5F00" opacity="0.6" rx="0"/>
+            </svg>
+            <svg viewBox="0 0 48 16" width="42" height="14" class="brand-logo">
+              <rect width="48" height="16" rx="3" fill="rgba(255,255,255,0.08)"/>
+              <text x="24" y="12" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="8" fill="#A09CB5">AMEX</text>
+            </svg>
+            <svg viewBox="0 0 48 16" width="42" height="14" class="brand-logo">
+              <rect width="48" height="16" rx="3" fill="rgba(255,255,255,0.08)"/>
+              <text x="24" y="11" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="7" fill="#A09CB5">DINERS</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Pay Button -->
+        <button type="button" id="payBtn" class="btn btn-primary" disabled>
+          <span id="payBtnText">Pagar</span>
+          <div id="paySpinner" class="spinner" style="display:none;"></div>
+        </button>
+
+        <!-- Secure Badge -->
+        <div class="secure-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Pago seguro encriptado · Powered by
+          <svg viewBox="0 0 70 20" width="56" height="16" style="vertical-align:middle;margin-left:2px">
+            <text x="0" y="15" font-family="Arial,sans-serif" font-weight="800" font-size="15" fill="#6C5CE7">wompi</text>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="payment-footer">
+      <p>Transacción protegida con encriptación SSL de 256 bits</p>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
